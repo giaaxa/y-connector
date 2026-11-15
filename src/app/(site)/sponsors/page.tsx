@@ -1,4 +1,4 @@
-import { ArrowRight, Briefcase, Coins, Handshake, LineChart, Mail } from "lucide-react";
+import { ArrowRight, Mail } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { PageHero } from "@/components/site/page-hero";
@@ -17,25 +17,21 @@ export const metadata: Metadata = {
 
 const AUDIENCES = [
   {
-    icon: Briefcase,
     title: "Recruiters",
     body: "Meet emerging AI, data, engineering and FinTech talent before anyone else.",
     gets: ["Introductions to members who opt in to industry talent sharing", "A presence at the AI FinTech Festival talent fair", "Host a recruiting session or challenge"],
   },
   {
-    icon: LineChart,
     title: "Investors & VCs",
     body: "Get early sight of the prototypes our members build through the year.",
     gets: ["Front-row seats at the Prototype Demo Showcase", "Briefings on the public prototype listing", "Meet founders directly, on your own terms"],
   },
   {
-    icon: Handshake,
     title: "Industry leaders",
     body: "Shape the skills, ideas and people your industry will need next.",
     gets: ["Speak at a monthly event or the festival", "Mentor members and set real-world briefs", "Co-design workshops and training content"],
   },
   {
-    icon: Coins,
     title: "Funders",
     body: "Put money where it changes trajectories: into young builders.",
     gets: ["Fund prototype programme places for members", "Back seed-corn awards and prizes", "Support events, training and the festival"],
@@ -60,26 +56,35 @@ export default function SponsorsPage() {
         <p className="mt-5 text-sm text-muted">Sponsorships start from <strong className="text-ink">£{SPONSOR_MIN_POUNDS}</strong>. Every package is shaped with you.</p>
       </PageHero>
 
-      {/* ───── Who sponsors ───── */}
-      <section className="py-20 sm:py-24">
-        <Container>
-          <SectionHeading eyebrow="Who sponsors" title="Four ways to get involved." intro="Whether you want to hire, invest, lead or fund, there's a sponsorship that fits." />
-          <div className="mt-12 grid grid-cols-1 gap-5 md:grid-cols-2">
-            {AUDIENCES.map((a) => (
-              <div key={a.title} className="group flex flex-col rounded-3xl border border-line p-7 transition hover:border-ink sm:p-8">
-                <div className="flex items-center gap-4">
-                  <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-sun-soft transition group-hover:bg-sun"><a.icon className="h-5 w-5" aria-hidden /></span>
-                  <h3 className="text-2xl font-bold tracking-tight">{a.title}</h3>
-                </div>
-                <p className="mt-4 text-ink-soft">{a.body}</p>
-                <ul className="mt-5 space-y-2.5 border-t border-line pt-5 text-sm">
-                  {a.gets.map((g) => (
-                    <li key={g} className="flex gap-3"><span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-sun" />{g}</li>
-                  ))}
-                </ul>
-              </div>
-            ))}
+      {/* ───── Who sponsors: editorial list, no cards ───── */}
+      <section className="py-20 sm:py-28">
+        <Container className="grid gap-12 lg:grid-cols-[0.75fr_1.25fr] lg:gap-20">
+          <div className="lg:sticky lg:top-28 lg:self-start">
+            <SectionHeading eyebrow="Who sponsors" title="Four ways to get involved." intro="Whether you want to hire, invest, lead or fund, there's a sponsorship that fits." />
           </div>
+          <ol className="border-b border-ink">
+            {AUDIENCES.map((a, i) => (
+              <li key={a.title} className="group grid gap-x-8 gap-y-3 border-t border-ink py-9 sm:grid-cols-[3.5rem_1fr]">
+                <span className="font-mono text-sm text-subtle transition group-hover:text-ink">{String(i + 1).padStart(2, "0")}</span>
+                <div>
+                  <h3 className="text-3xl font-bold tracking-[-0.03em] sm:text-4xl">
+                    <span className="bg-[linear-gradient(transparent_62%,var(--color-sun)_62%)] bg-[length:0%_100%] bg-no-repeat transition-[background-size] duration-500 group-hover:bg-[length:100%_100%]">
+                      {a.title}
+                    </span>
+                  </h3>
+                  <p className="mt-3 max-w-xl text-lg text-ink-soft">{a.body}</p>
+                  <p className="mt-4 max-w-xl text-[15px] leading-relaxed text-muted">
+                    {a.gets.map((g, j) => (
+                      <span key={g}>
+                        {g}
+                        {j < a.gets.length - 1 && <span className="mx-2 text-sun" aria-hidden>/</span>}
+                      </span>
+                    ))}
+                  </p>
+                </div>
+              </li>
+            ))}
+          </ol>
         </Container>
       </section>
 

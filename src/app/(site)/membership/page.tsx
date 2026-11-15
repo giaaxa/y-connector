@@ -1,9 +1,7 @@
-import { ArrowRight, BadgeCheck, CalendarClock, FileCheck2, GraduationCap, Mail, ShieldCheck } from "lucide-react";
+import { BadgeCheck, FileCheck2, GraduationCap, Mail } from "lucide-react";
 import type { Metadata } from "next";
 import { FocusAreas, OfferingsGrid, PrototypeSchedule } from "@/components/membership/offerings";
 import { PricingCards } from "@/components/membership/pricing";
-import { PageHero } from "@/components/site/page-hero";
-import { ButtonLink } from "@/components/ui/button";
 import { Container, SectionHeading } from "@/components/ui/primitives";
 import { repo } from "@/lib/data";
 import { formatPence } from "@/lib/policy";
@@ -16,9 +14,9 @@ export const metadata: Metadata = {
 export default async function MembershipPage() {
   const s = await repo().getSettings();
   const terms = [
-    { icon: CalendarClock, title: "Annual, not monthly", body: `One payment covers 12 months: ${formatPence(s.priceEssexStudentPence)} for Essex students, ${formatPence(s.priceEssexAlumniPence)} for Essex alumni, ${formatPence(s.priceStandardPence)} for everyone else.` },
-    { icon: BadgeCheck, title: "Or pay once, for life", body: `Lifetime membership is a single ${formatPence(s.priceLifetimePence)} payment. No renewals, ever. You can upgrade from annual at any time.` },
-    { icon: ShieldCheck, title: "Cancel any time", body: "Annual plans renew automatically. Turn off renewal from your billing settings and keep access until the end of the year you've paid for." },
+    { title: "Annual, not monthly", body: `One payment covers 12 months: ${formatPence(s.priceEssexStudentPence)} for Essex students, ${formatPence(s.priceEssexAlumniPence)} for Essex alumni, ${formatPence(s.priceStandardPence)} for everyone else.` },
+    { title: "Or pay once, for life", body: `Lifetime membership is a single ${formatPence(s.priceLifetimePence)} payment. No renewals, ever. You can upgrade from annual at any time.` },
+    { title: "Cancel any time", body: "Annual plans renew automatically. Turn off renewal from your billing settings and keep access until the end of the year you've paid for." },
   ];
   const faqs = [
     { q: "Are all events and courses free for members?", a: "Many events and all core learning resources are included in membership. Some special events or future intensive programmes may be priced separately. Each listing clearly says what's included." },
@@ -35,28 +33,24 @@ export default async function MembershipPage() {
   ];
   return (
     <>
-      <PageHero
-        eyebrow="Membership"
-        title={<>Your network. Your skills. <span className="mark">Your next move.</span></>}
-        intro="One membership, paid yearly or once for life, gives you the community, the events, the learning and the people to build with."
-      >
-        <ButtonLink href="/join" size="lg">
-          Apply now <ArrowRight className="h-4 w-4" />
-        </ButtonLink>
-      </PageHero>
-
-      <section className="py-16 sm:py-20">
+      <section className="pt-14 pb-16 sm:pt-20 sm:pb-24">
         <Container>
-          <PricingCards settings={s} />
-          <div className="mt-10 grid gap-px overflow-hidden rounded-3xl border border-line bg-line md:grid-cols-3">
+          <p className="eyebrow text-muted">Membership</p>
+          <div className="mt-4 grid gap-4 border-b border-ink pb-10 sm:grid-cols-[1fr_auto] sm:items-baseline sm:gap-10">
+            <h1 className="text-4xl leading-[1.05] font-bold tracking-[-0.04em] sm:text-6xl">Prices &amp; plans</h1>
+            <p className="max-w-sm text-base leading-snug text-muted sm:text-right">
+              Open to students and graduates under {s.maxAgeExclusive}.<br className="hidden sm:block" /> Pay yearly, or once for life.
+            </p>
+          </div>
+          <div className="mt-10"><PricingCards settings={s} /></div>
+          <dl className="mt-14 grid grid-cols-1 gap-x-10 md:grid-cols-3">
             {terms.map((t) => (
-              <div key={t.title} className="bg-white p-7">
-                <t.icon className="h-5 w-5" aria-hidden />
-                <p className="mt-4 font-semibold">{t.title}</p>
-                <p className="mt-1.5 text-sm leading-relaxed text-muted">{t.body}</p>
+              <div key={t.title} className="border-t border-line py-6">
+                <dt className="font-semibold">{t.title}</dt>
+                <dd className="mt-1.5 text-sm leading-relaxed text-muted">{t.body}</dd>
               </div>
             ))}
-          </div>
+          </dl>
         </Container>
       </section>
 
