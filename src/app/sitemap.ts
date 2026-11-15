@@ -4,7 +4,7 @@ import { repo } from "@/lib/data";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = siteConfig.url;
-  const staticPaths = ["", "/about", "/events", "/community", "/upskill", "/startups", "/insights", "/membership", "/join", "/contact", "/ambassadors", "/legal/privacy", "/legal/terms", "/legal/community-guidelines"];
+  const staticPaths = ["", "/about", "/events", "/festival", "/community", "/upskill", "/startups", "/insights", "/membership", "/join", "/contact", "/ambassadors", "/legal/privacy", "/legal/terms", "/legal/community-guidelines"];
   const r = repo();
   const [events, courses, startups] = await Promise.all([r.listEvents(), r.listCourses(), r.listStartups()]);
   return [

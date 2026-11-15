@@ -159,6 +159,7 @@ export async function updateProfile(_: ActionState, fd: FormData): Promise<Actio
     websiteUrl: website,
     discoverable: fd.get("discoverable") === "on",
     allowContact: fd.get("allowContact") === "on",
+    shareWithIndustry: fd.get("shareWithIndustry") === "on",
   };
   await repo().updateProfile(v.id, patch);
   revalidatePath("/", "layout");
@@ -268,6 +269,24 @@ export async function sendContact(_: ActionState, fd: FormData): Promise<ActionS
   if (str(fd, "company")) return { ok: true, message: "Thanks!" }; // honeypot
   await repo().createContactMessage({ name, email, topic: str(fd, "topic", 80), message });
   return { ok: true, message: "Message received — we'll reply as soon as we can." };
+}
+
+export async function registerFestivalInterest(_: ActionState, fd: FormData): Promise<ActionState> {
+  const name = str(fd, "name", 120);
+  const email = str(fd, "email", 200).toLowerCase();
+  if (!name || !isEmail(email)) return fail("Please add your name and a valid email.");
+  if (fd.get("consent") !== "on") return fail("Please agree to the privacy policy.");
+  if (str(fd, "company")) return { ok: true, message: "Thanks!" }; // honeypot
+  const roles = fd.getAll("roles").map(String).slice(0, 6);
+  const organisation = str(fd, "organisation", 160);
+  // Stored in the operations inbox (admin overview → Contact messages).
+  await repo().createContactMessage({
+    name,
+    email,
+    topic: `Festival · ${roles.length ? roles.join(", ") : "Attend"}`,
+    message: [organisation && `Organisation: ${organisation}`, str(fd, "message", 2000)].filter(Boolean).join("\n") || "(no message)",
+  });
+  return { ok: true, message: "You're on the list. We'll email you as soon as dates, speakers and tickets are announced." };
 }
 
 /* ═════════════ PRIVACY ═════════════ */

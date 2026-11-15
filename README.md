@@ -122,7 +122,9 @@ supabase/           schema, RLS and seed SQL
 - **Team and governance** profile slots on `/about`.
 - **Legal pages** (`/legal/*`) are drafts. Get UK legal review, including the entity name, ICO registration and refund terms.
 - **Eligibility.** Confirm the recent-alumni definition in Admin → Settings.
-- **University wording.** Y Connector makes **no claim of affiliation** with the University of Essex, FinteX or AI-FincubeX. Keep it that way unless a partnership is formally agreed.
+- **Partnership wording.** The site states a partnership with AI-FincubeX (University of Essex, FinteX), confirmed by the project owner. Check the wording on `/about#partnership` and `/membership#programme` with AI-FincubeX before launch.
+- **AI FinTech Festival.** Set the dates, venue and edition in `src/lib/festival.ts`. Until then the site shows "to be announced". Set `ticketsOpen: true` once you've added a published event in the "Festival" category. Register-interest submissions arrive in Admin → Overview → Contact messages.
+- **Training focus areas** in `src/lib/offerings.ts` were taken from the public AI-FincubeX page. Check them against the programme's "Figure 1".
 
 ## Scope notes
 

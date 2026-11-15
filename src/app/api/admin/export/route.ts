@@ -34,6 +34,16 @@ export async function GET(req: Request) {
         return [e?.title ?? x.eventId, e?.startsAt ?? "", x.name, x.email, x.status, x.createdAt];
       }),
     ]);
+  } else if (type === "talent") {
+    // Talent dissemination: ONLY active members who opted in. No email, DOB or payment data.
+    const [profiles, memberships] = await Promise.all([r.listProfiles(), r.listMemberships()]);
+    const active = new Set(memberships.filter((m) => ["active", "past_due"].includes(m.status) && m.currentPeriodEnd && new Date(m.currentPeriodEnd) > new Date()).map((m) => m.userId));
+    body = csv([
+      ["name", "headline", "university", "city", "skills", "interests", "current_projects", "startup_stage", "open_to_collaborate", "portfolio_url"],
+      ...profiles
+        .filter((p) => p.shareWithIndustry && active.has(p.id))
+        .map((p) => [p.fullName, p.headline, p.university, p.city, p.skills.join("; "), p.interests.join("; "), p.currentProjects, p.startupStage ?? "", p.lookingForCollaborators ? "yes" : "no", p.websiteUrl]),
+    ]);
   } else {
     return new Response("Unknown export type", { status: 400 });
   }

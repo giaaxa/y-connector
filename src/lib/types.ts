@@ -43,6 +43,8 @@ export interface Profile {
   websiteUrl: string;
   discoverable: boolean;
   allowContact: boolean;
+  /** Opt-in: profile may be shared with industry partners (talent dissemination). */
+  shareWithIndustry: boolean;
   roles: Role[];
   referralCode: string;
   referredBy: string | null;
@@ -96,6 +98,8 @@ export const EVENT_CATEGORIES = [
   "Masterclass",
   "Networking",
   "Startup Lab",
+  "Prototype Session",
+  "Festival",
   "Investment Education",
 ] as const;
 export type EventCategory = (typeof EVENT_CATEGORIES)[number];

@@ -8,6 +8,7 @@ const cols = [
     links: [
       { href: "/about", label: "About" },
       { href: "/events", label: "Events" },
+      { href: "/festival", label: "AI FinTech Festival" },
       { href: "/community", label: "Community" },
       { href: "/upskill", label: "Upskill" },
       { href: "/startups", label: "Startups" },
@@ -80,7 +81,7 @@ export function SiteFooter() {
         </div>
       </div>
       <div className="mx-auto flex max-w-7xl flex-col gap-2 border-t border-line px-5 py-6 text-xs text-muted sm:flex-row sm:justify-between sm:px-8">
-        <p>© {new Date().getFullYear()} Y Connector. An independent community initiative.</p>
+        <p>© {new Date().getFullYear()} Y Connector. A community initiative in partnership with AI-FincubeX.</p>
         <p>Educational community — not a regulated financial services provider.</p>
       </div>
     </footer>

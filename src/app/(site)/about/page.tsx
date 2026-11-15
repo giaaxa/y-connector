@@ -99,20 +99,21 @@ export default function AboutPage() {
         </Container>
       </section>
 
-      {/* Inspiration — no affiliation claimed */}
-      <section className="py-20 sm:py-24">
+      {/* Partnership */}
+      <section className="py-20 sm:py-24" id="partnership">
         <Container className="grid gap-12 lg:grid-cols-2 lg:items-center">
           <div>
-            <Eyebrow>Inspiration</Eyebrow>
-            <h2 className="mt-4 text-3xl font-bold tracking-[-0.03em] sm:text-4xl">Learning from what&apos;s working.</h2>
+            <Eyebrow>Partnership</Eyebrow>
+            <h2 className="mt-4 text-3xl font-bold tracking-[-0.03em] sm:text-4xl">In partnership with AI-FincubeX.</h2>
             <p className="mt-5 leading-relaxed text-ink-soft">
-              Our thinking has been inspired by the kind of work happening at the University of Essex&apos;s Financial
-              Technology Essex Centre (FinteX) and its AI-FincubeX initiative: research and activity spanning AI, FinTech,
-              digital finance, incubation and close engagement with industry.
+              Y Connector works in partnership with AI-FincubeX, the AI and FinTech incubator and lab (I-Labs) at the
+              University of Essex&apos;s Financial Technology Essex Centre (FinteX). AI-FincubeX is a hands-on,
+              multi-disciplinary forum for designing and developing solutions for the digital economy, working closely
+              with industry experts.
             </p>
             <p className="mt-4 leading-relaxed text-ink-soft">
-              That combination of rigorous research, applied technology and real-world industry links is exactly the
-              bridge we want to make accessible to young people more widely, through a community they own and shape.
+              Through the partnership, members get non-degree training in AI-FincubeX&apos;s focus areas, a 10-month
+              prototype development programme, and a bridge between applied research, industry and entrepreneurship.
             </p>
             <a
               href="https://www.essex.ac.uk/centres-and-institutes/financial-technology-essex/ai-fincubex"
@@ -120,16 +121,27 @@ export default function AboutPage() {
               rel="noopener noreferrer"
               className="mt-6 inline-flex items-center gap-1.5 text-sm font-semibold underline decoration-sun decoration-2 underline-offset-4"
             >
-              Read about AI-FincubeX <ExternalLink className="h-3.5 w-3.5" />
+              About AI-FincubeX <ExternalLink className="h-3.5 w-3.5" />
             </a>
           </div>
-          <div className="rounded-3xl border border-dashed border-ink/25 bg-mist p-8">
-            <p className="eyebrow text-muted">Independence statement</p>
-            <p className="mt-4 text-lg leading-relaxed">
-              Y Connector is an <strong>independent community initiative</strong> with its own identity. We are not part of,
-              affiliated with, or endorsed by the University of Essex, FinteX or AI-FincubeX. Any future partnership will
-              only be announced here once formally agreed.
-            </p>
+          <div className="rounded-3xl bg-mist p-8">
+            <p className="eyebrow text-muted">What the partnership brings members</p>
+            <ul className="mt-5 space-y-3">
+              {[
+                "AI-FincubeX non-degree training",
+                "Kick-the-tyres and prototype development sessions",
+                "Expert input from AI, FinTech and industry practitioners",
+                "A route from prototype to funding and industry",
+              ].map((x) => (
+                <li key={x} className="flex gap-3">
+                  <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-sun" />
+                  <span>{x}</span>
+                </li>
+              ))}
+            </ul>
+            <ButtonLink href="/membership#programme" variant="dark" size="sm" className="mt-7">
+              See the full programme <ArrowRight className="h-4 w-4" />
+            </ButtonLink>
           </div>
         </Container>
       </section>

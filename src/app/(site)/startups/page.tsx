@@ -36,14 +36,14 @@ export default async function StartupsPage({ searchParams }: { searchParams: Pro
       <PageHero
         eyebrow="Startups & projects"
         title={<span className="uppercase">Built by the community.</span>}
-        intro="A growing showcase of businesses, experiments and technology projects started or supported by Y Connector members, from first idea to growing company."
+        intro="A public web listing of prototypes, businesses and technology projects built by Y Connector members, from first idea to growing company. Every listing is visible to potential VC investors looking for what's next."
       >
         <ButtonLink href="/projects" variant="dark">Submit your project <ArrowRight className="h-4 w-4" /></ButtonLink>
       </PageHero>
       <section className="py-12 sm:py-16">
         <Container>
           <Notice tone="neutral" className="max-w-3xl">
-            Projects listed here are led by members. Unless explicitly stated, Y Connector does not own, invest in or formally incubate them. Cards marked “Sample concept” are illustrations, not real companies.
+            Projects listed here are led by members. Unless explicitly stated, Y Connector does not own or invest in them, and a listing is not an offer of investment. Any investment conversation happens directly between founders and investors. Cards marked “Sample concept” are illustrations, not real companies.
           </Notice>
           <div className="mt-8 flex flex-col gap-3">
             <div className="flex flex-wrap gap-2">

@@ -55,6 +55,7 @@ export default async function AdminOverview() {
             <>
               <ButtonLink href="/api/admin/export?type=members" variant="outline" size="sm" prefetch={false}><Download className="h-4 w-4" /> Members CSV</ButtonLink>
               <ButtonLink href="/api/admin/export?type=rsvps" variant="outline" size="sm" prefetch={false}><Download className="h-4 w-4" /> RSVPs CSV</ButtonLink>
+              <ButtonLink href="/api/admin/export?type=talent" variant="outline" size="sm" prefetch={false}><Download className="h-4 w-4" /> Industry talent CSV (opted-in)</ButtonLink>
             </>
           )
         }

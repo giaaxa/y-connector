@@ -33,7 +33,7 @@ export default function InsightsPage() {
       <section className="py-14 sm:py-20">
         <Container>
           <Notice tone="sun" title="Education and networking only" className="max-w-3xl">
-            Y Connector is not an investment platform, broker, lender or financial adviser. We don&apos;t solicit investments, pool member money, arrange loans or advertise returns. Nothing here is financial advice. Any future regulated activity would only follow proper legal and regulatory assessment.
+            Y Connector is not an investment platform, broker, lender or financial adviser. We don&apos;t solicit investments, pool member money, arrange loans or advertise returns. Nothing here is financial advice. Members can access non-VC seed-corn funding opportunities and list prototypes publicly for potential investors, but each funding route has its own criteria and investment conversations happen directly between founders and investors. Any future regulated activity would only follow proper legal and regulatory assessment.
           </Notice>
           <div className="mt-12 grid gap-px overflow-hidden rounded-3xl border border-line bg-line sm:grid-cols-2 lg:grid-cols-5">
             {topics.map((x, i) => (

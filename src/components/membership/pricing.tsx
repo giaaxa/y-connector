@@ -5,6 +5,12 @@ import type { PlatformSettings } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 export const MEMBERSHIP_BENEFITS = [
+  "AI-FincubeX non-degree training",
+  "10-month prototype development programme (2 sessions a month)",
+  "Online technical advice, including AI EdTech",
+  "Access to non-VC seed-corn funding opportunities",
+  "Web listing of your prototype for potential VC investors",
+  "Opt-in talent dissemination to industry",
   "Members-only community forum & discussions",
   "Member networking and talent directory",
   "Co-founder and collaborator matching",

@@ -41,6 +41,7 @@ const toProfile = (r: Row, roles: string[] = []): Profile => ({
   websiteUrl: r.website_url,
   discoverable: r.discoverable,
   allowContact: r.allow_contact,
+  shareWithIndustry: r.share_with_industry ?? false,
   roles: (roles.length ? roles : (r.user_roles ?? []).map((x: Row) => x.role)) as Profile["roles"],
   referralCode: r.referral_code,
   referredBy: r.referred_by,
@@ -52,6 +53,7 @@ const fromProfile = (p: Partial<Profile>): Row => {
     skills: "skills", interests: "interests", currentProjects: "current_projects", startupStage: "startup_stage",
     lookingForCollaborators: "looking_for_collaborators", availableForMentoring: "available_for_mentoring",
     websiteUrl: "website_url", discoverable: "discoverable", allowContact: "allow_contact",
+    shareWithIndustry: "share_with_industry",
   };
   const out: Row = {};
   for (const [k, v] of Object.entries(p)) if (m[k]) out[m[k]] = v;
