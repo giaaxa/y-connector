@@ -6,6 +6,7 @@ insert into forum_categories (slug, name, description, position) values
   ('general','General Community','Anything and everything about building, learning and the community.',1),
   ('introductions','Introductions','New here? Say hello and tell us what you''re working on.',2),
   ('ai-automation','AI & Automation','Tools, agents, workflows and the practical side of AI.',3),
+  ('ai-edtech','AI EdTech Technical Advice','Online technical advice on building with AI, including AI EdTech products.',12),
   ('building-startups','Building Startups','Validation, MVPs, customers and the messy middle.',4),
   ('fintech','FinTech & Digital Payments','Payments, digital money, open banking and financial infrastructure.',5),
   ('funding','Funding & Investment Education','Learn how funding and markets work. Education only — no investment solicitation.',6),

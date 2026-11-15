@@ -9,6 +9,7 @@ export const PUBLIC_NAV = [
   { href: "/community", label: "Community" },
   { href: "/upskill", label: "Upskill" },
   { href: "/startups", label: "Startups" },
+  { href: "/festival", label: "Festival" },
   { href: "/membership", label: "Membership" },
 ];
 

@@ -67,6 +67,7 @@ export default async function AccountPage() {
             <Checkbox name="availableForMentoring" defaultChecked={p.availableForMentoring} label="I'm available for mentoring" />
             <Checkbox name="discoverable" defaultChecked={p.discoverable} label="Show my profile in the members-only talent directory" />
             <Checkbox name="allowContact" defaultChecked={p.allowContact} label="Allow members to send me collaboration requests (my email is only shared if I accept)" />
+            <Checkbox name="shareWithIndustry" defaultChecked={p.shareWithIndustry} label="Share my profile with industry partners looking for talent (name, headline, university, skills, projects and links; never my email or date of birth)" />
           </div>
         </ActionForm>
       </Card>

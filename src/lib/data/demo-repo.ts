@@ -174,6 +174,7 @@ export const demoRepo: Repo = {
         lookingForCollaborators: false,
         availableForMentoring: false,
         discoverable: false,
+        shareWithIndustry: false,
         roles: ["member"],
         referralCode: "YC" + app.userId.slice(-6).toUpperCase(),
         referredBy: null,

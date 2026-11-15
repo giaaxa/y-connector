@@ -43,7 +43,7 @@ export function HeaderNav({ nav, viewer }: { nav: NavItem[]; viewer: ViewerLite 
     >
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-6 px-5 sm:px-8">
         <Logo />
-        <nav aria-label="Main" className="hidden items-center gap-1 lg:flex">
+        <nav aria-label="Main" className="hidden items-center gap-1 xl:flex">
           {nav.map((item) => (
             <Link
               key={item.href}
@@ -58,7 +58,7 @@ export function HeaderNav({ nav, viewer }: { nav: NavItem[]; viewer: ViewerLite 
             </Link>
           ))}
         </nav>
-        <div className="hidden items-center gap-2 lg:flex">
+        <div className="hidden items-center gap-2 xl:flex">
           {viewer ? (
             <>
               {viewer.isStaff && (
@@ -87,7 +87,7 @@ export function HeaderNav({ nav, viewer }: { nav: NavItem[]; viewer: ViewerLite 
         </div>
         <button
           type="button"
-          className="-mr-2 inline-flex h-11 w-11 items-center justify-center rounded-full hover:bg-fog lg:hidden"
+          className="-mr-2 inline-flex h-11 w-11 items-center justify-center rounded-full hover:bg-fog xl:hidden"
           aria-expanded={open}
           aria-controls="mobile-nav"
           aria-label={open ? "Close menu" : "Open menu"}
@@ -98,7 +98,7 @@ export function HeaderNav({ nav, viewer }: { nav: NavItem[]; viewer: ViewerLite 
       </div>
 
       {open && (
-        <div id="mobile-nav" className="fixed inset-x-0 top-16 bottom-0 z-40 overflow-y-auto bg-white lg:hidden">
+        <div id="mobile-nav" className="fixed inset-x-0 top-16 bottom-0 z-40 overflow-y-auto bg-white xl:hidden">
           <nav aria-label="Mobile" className="flex flex-col px-5 pt-4 pb-10">
             {nav.map((item, i) => (
               <Link

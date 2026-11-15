@@ -16,6 +16,7 @@ import { PricingCards } from "@/components/membership/pricing";
 import { ButtonLink } from "@/components/ui/button";
 import { Container, Eyebrow, SampleTag, SectionHeading } from "@/components/ui/primitives";
 import { repo } from "@/lib/data";
+import { FESTIVAL, festivalWhen, festivalWhere } from "@/lib/festival";
 import { getPublicPreviewThreads, getUpcomingEvents } from "@/lib/queries";
 
 export default async function HomePage() {
@@ -56,6 +57,33 @@ export default async function HomePage() {
               Events marked “Example event” are illustrative. Confirmed dates, venues and speakers will be announced here.
             </p>
           )}
+        </Container>
+      </section>
+
+      {/* ───────── ANNUAL FESTIVAL ───────── */}
+      <section className="pb-20 sm:pb-28 bg-mist" aria-labelledby="festival-heading">
+        <Container>
+          <Link href="/festival" className="group relative grid overflow-hidden rounded-[2rem] bg-sun p-8 sm:p-12 lg:grid-cols-[1.3fr_1fr] lg:items-end lg:gap-10">
+            <svg aria-hidden viewBox="0 0 600 300" className="pointer-events-none absolute -right-20 -bottom-24 w-[34rem] opacity-70 transition duration-700 group-hover:rotate-6">
+              <ellipse cx="300" cy="150" rx="280" ry="110" fill="none" stroke="#111" strokeOpacity="0.18" strokeWidth="2" transform="rotate(-15 300 150)" />
+              <ellipse cx="300" cy="150" rx="200" ry="74" fill="none" stroke="#111" strokeOpacity="0.12" transform="rotate(-15 300 150)" />
+            </svg>
+            <div className="relative">
+              <p className="eyebrow text-ink/70">Annual flagship · {FESTIVAL.edition}</p>
+              <h2 id="festival-heading" className="mt-4 text-[clamp(2.4rem,6vw,4.75rem)] leading-[0.9] font-extrabold tracking-[-0.045em] uppercase">
+                AI FinTech
+                <br />
+                Festival
+              </h2>
+            </div>
+            <div className="relative mt-6 lg:mt-0">
+              <p className="text-lg font-medium text-ink/80">{FESTIVAL.tagline} Keynotes, a build sprint, the prototype demo showcase and a talent fair.</p>
+              <p className="mt-4 text-sm font-semibold">{festivalWhen()} · {festivalWhere()}</p>
+              <span className="mt-6 inline-flex h-11 items-center gap-2 rounded-full bg-ink px-5 text-[15px] font-semibold text-white transition group-hover:gap-3">
+                {FESTIVAL.ticketsOpen ? "Get tickets" : "Register your interest"} <ArrowRight className="h-4 w-4" />
+              </span>
+            </div>
+          </Link>
         </Container>
       </section>
 
@@ -117,7 +145,7 @@ export default async function HomePage() {
               <SectionHeading
                 eyebrow="07 — Membership"
                 title={<span id="membership-heading">One year. Everything you need to start building.</span>}
-                intro="Two simple annual tiers with the same core benefits. No monthly subscriptions, no hidden extras. Membership opens once your student or recent-graduate status is verified."
+                intro="Two simple annual tiers with the same core benefits: AI-FincubeX non-degree training, a 10-month prototype development programme, technical advice, routes to seed-corn funding, a prototype listing for investors and opt-in talent introductions to industry. Membership opens once your student or recent-graduate status is verified."
               />
               <ButtonLink href="/membership" variant="link" className="mt-6">
                 What&apos;s included &amp; who&apos;s eligible <ArrowUpRight className="h-4 w-4" />

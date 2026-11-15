@@ -1,5 +1,6 @@
 import { ArrowRight, BadgeCheck, CalendarClock, FileCheck2, GraduationCap, Mail, ShieldCheck } from "lucide-react";
 import type { Metadata } from "next";
+import { FocusAreas, OfferingsGrid, PrototypeSchedule } from "@/components/membership/offerings";
 import { PricingCards } from "@/components/membership/pricing";
 import { PageHero } from "@/components/site/page-hero";
 import { ButtonLink } from "@/components/ui/button";
@@ -21,6 +22,9 @@ export default async function MembershipPage() {
   ];
   const faqs = [
     { q: "Are all events and courses free for members?", a: "Many events and all core learning resources are included in membership. Some special events or future intensive programmes may be priced separately. Each listing clearly says what's included." },
+    { q: "How does the prototype programme work?", a: "Over 10 months you get two 2-hour sessions a month: one online and one hybrid in person. You can join with an idea at any stage and work towards a working prototype." },
+    { q: "Does membership guarantee funding?", a: "No. Membership gives you access to non-VC seed-corn funding opportunities and a public prototype listing that potential VC investors can see. Each funding opportunity has its own criteria, and Y Connector doesn't pool member money, offer investments or give financial advice." },
+    { q: "Who sees my profile if I opt in to talent dissemination?", a: "Industry partners looking for emerging talent. It's off by default; you switch it on or off any time in your profile settings." },
     { q: "What counts as a “recent” graduate?", a: `At the moment, someone who graduated within the last ${s.recentAlumniYears} years. Our team reviews this definition periodically, and the current rule is always shown here.` },
     { q: "Why do you verify eligibility?", a: "Y Connector is built for students and early-career founders. Verification keeps the community focused and trusted. We collect the minimum information needed and delete verification documents after a decision." },
     { q: "When does my access start?", a: "As soon as your eligibility is verified and your payment has been confirmed by our payment provider. Usually within minutes of paying." },
@@ -54,6 +58,27 @@ export default async function MembershipPage() {
         </Container>
       </section>
 
+      <section className="border-t border-line py-16 sm:py-24" id="programme">
+        <Container>
+          <SectionHeading
+            eyebrow="What membership includes"
+            title="Training, building time, advice, and a route to funding and industry."
+            intro="Alongside the community, events and learning hub, every member gets the full programme. The core offer is the same at both price tiers."
+          />
+          <div className="mt-12"><OfferingsGrid detailed /></div>
+          <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-[1.4fr_1fr]">
+            <PrototypeSchedule />
+            <div className="rounded-3xl border border-line p-7 sm:p-10">
+              <p className="eyebrow text-muted">AI-FincubeX training focus areas</p>
+              <p className="mt-3 text-sm leading-relaxed text-ink-soft">
+                Non-degree training delivered in partnership with AI-FincubeX, the AI and FinTech incubator and lab at the University of Essex.
+              </p>
+              <div className="mt-6"><FocusAreas /></div>
+            </div>
+          </div>
+        </Container>
+      </section>
+
       <section className="border-y border-line bg-mist py-16 sm:py-24" id="eligibility">
         <Container className="grid gap-12 lg:grid-cols-2">
           <div>
@@ -72,7 +97,7 @@ export default async function MembershipPage() {
               ))}
             </ul>
             <p className="mt-6 text-sm text-muted">
-              The <strong className="text-ink">Essex Alumni</strong> rate applies to recent graduates of the University of Essex. It is a membership pricing tier only and does not imply any affiliation with the University.
+              The <strong className="text-ink">Essex Alumni</strong> rate applies to recent graduates of the University of Essex.
             </p>
           </div>
           <div>
