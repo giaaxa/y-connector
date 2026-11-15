@@ -9,6 +9,7 @@ import { repo } from "../data";
 import { sendEmail, templates } from "../email";
 import type { Profile, StartupStage, Startup } from "../types";
 import { formatEventDate, formatTime, isEmail, slugify, str } from "../utils";
+import { SPONSOR_MIN_POUNDS } from "../constants";
 import type { ActionState } from "./types";
 
 const fail = (message: string): ActionState => ({ ok: false, message });
@@ -287,6 +288,33 @@ export async function registerFestivalInterest(_: ActionState, fd: FormData): Pr
     message: [organisation && `Organisation: ${organisation}`, str(fd, "message", 2000)].filter(Boolean).join("\n") || "(no message)",
   });
   return { ok: true, message: "You're on the list. We'll email you as soon as dates, speakers and tickets are announced." };
+}
+
+export async function sponsorEnquiry(_: ActionState, fd: FormData): Promise<ActionState> {
+  const name = str(fd, "name", 120);
+  const email = str(fd, "email", 200).toLowerCase();
+  const organisation = str(fd, "organisation", 160);
+  if (!name || !isEmail(email)) return fail("Please add your name and a valid email.");
+  if (!organisation) return fail("Please tell us your organisation.");
+  const amount = Number(str(fd, "amount", 12).replace(/[£,\s]/g, ""));
+  if (!Number.isFinite(amount) || amount < SPONSOR_MIN_POUNDS) {
+    return { ok: false, message: `Sponsorship starts from £${SPONSOR_MIN_POUNDS}. Please enter £${SPONSOR_MIN_POUNDS} or more.`, errors: { amount: `Minimum £${SPONSOR_MIN_POUNDS}.` } };
+  }
+  if (fd.get("consent") !== "on") return fail("Please agree to the privacy policy.");
+  if (str(fd, "company")) return { ok: true, message: "Thanks!" }; // honeypot
+  const types = fd.getAll("sponsorType").map(String).slice(0, 6);
+  const supports = fd.getAll("supports").map(String).slice(0, 8);
+  await repo().createContactMessage({
+    name,
+    email,
+    topic: `Sponsorship · ${types.join(", ") || "General"} · £${Math.round(amount).toLocaleString("en-GB")}`,
+    message: [
+      `Organisation: ${organisation}`,
+      supports.length && `Interested in supporting: ${supports.join(", ")}`,
+      str(fd, "message", 3000),
+    ].filter(Boolean).join("\n"),
+  });
+  return { ok: true, message: "Thank you! Our partnerships team will be in touch within a few working days to shape a package with you." };
 }
 
 /* ═════════════ PRIVACY ═════════════ */

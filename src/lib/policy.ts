@@ -1,6 +1,7 @@
 import type {
   Application,
   Membership,
+  MembershipPlan,
   PlatformSettings,
   Role,
   StudentStatus,
@@ -8,13 +9,15 @@ import type {
 } from "./types";
 
 export const DEFAULT_SETTINGS: PlatformSettings = {
-  recentAlumniYears: 5, // PROVISIONAL default — admins set the real definition in /admin/settings
+  recentAlumniYears: 0, // 0 = no graduation-year limit; the under-38 age rule is the cut-off
   maxAgeExclusive: 38,
   essexUniversityNames: ["University of Essex"],
   essexEmailDomains: ["essex.ac.uk"],
   requireProofOfStatus: true,
-  priceEssexPence: 3000,
-  priceStandardPence: 5000,
+  priceEssexStudentPence: 3000, // current University of Essex students
+  priceEssexAlumniPence: 4000, // University of Essex alumni
+  priceStandardPence: 5000, // students & graduates of other universities
+  priceLifetimePence: 35000, // one-off lifetime membership
   verificationRetentionDays: 90,
 };
 
@@ -56,7 +59,7 @@ export function checkEligibility(
     else {
       const thisYear = now.getUTCFullYear();
       if (year > thisYear) problems.push("Graduation year can't be in the future for alumni.");
-      else if (thisYear - year > settings.recentAlumniYears)
+      else if (settings.recentAlumniYears > 0 && thisYear - year > settings.recentAlumniYears)
         problems.push(
           `Alumni membership is currently open to people who graduated within the last ${settings.recentAlumniYears} years.`,
         );
@@ -75,17 +78,32 @@ export function suggestTier(
   input: { university: string; studentStatus: StudentStatus },
   settings: PlatformSettings,
 ): Tier {
-  return input.studentStatus === "alumni" && isEssexUniversity(input.university, settings)
-    ? "essex_alumni"
-    : "standard";
+  if (!isEssexUniversity(input.university, settings)) return "standard";
+  return input.studentStatus === "alumni" ? "essex_alumni" : "essex_student";
 }
+
+export const TIER_LABELS: Record<Tier, string> = {
+  essex_student: "Essex Student",
+  essex_alumni: "Essex Alumni",
+  standard: "Students & Graduates",
+};
 
 export function tierLabel(tier: Tier) {
-  return tier === "essex_alumni" ? "Essex Alumni" : "Eligible Member";
+  return TIER_LABELS[tier] ?? "Member";
 }
 
+/** Annual price for a tier. */
 export function tierPricePence(tier: Tier, settings: PlatformSettings) {
-  return tier === "essex_alumni" ? settings.priceEssexPence : settings.priceStandardPence;
+  return { essex_student: settings.priceEssexStudentPence, essex_alumni: settings.priceEssexAlumniPence, standard: settings.priceStandardPence }[tier];
+}
+
+/** What a verified applicant pays for the chosen plan. */
+export function planPricePence(plan: MembershipPlan, tier: Tier, settings: PlatformSettings) {
+  return plan === "lifetime" ? settings.priceLifetimePence : tierPricePence(tier, settings);
+}
+
+export function planLabel(m: Pick<Membership, "plan" | "tier">) {
+  return m.plan === "lifetime" ? "Lifetime" : `${tierLabel(m.tier)} · annual`;
 }
 
 export function formatPence(p: number) {
@@ -104,6 +122,8 @@ export function isMembershipActive(
   if (!application || application.status !== "verified") return false;
   if (!membership) return false;
   if (!["active", "past_due"].includes(membership.status)) return false;
+  // Lifetime: paid once, never expires.
+  if (membership.plan === "lifetime") return membership.status === "active";
   if (!membership.currentPeriodEnd) return false;
   return new Date(membership.currentPeriodEnd) > now;
 }
@@ -136,4 +156,11 @@ export type Permission = keyof typeof PERMISSIONS;
 
 export function can(roles: Role[], permission: Permission) {
   return roles.some((r) => (PERMISSIONS[permission] as Role[]).includes(r));
+}
+
+/** Paid & current, ignoring verification (for operational metrics/exports). */
+export function isPaidMembership(m: Membership, now: Date = new Date()) {
+  if (!["active", "past_due"].includes(m.status)) return false;
+  if (m.plan === "lifetime") return m.status === "active";
+  return Boolean(m.currentPeriodEnd && new Date(m.currentPeriodEnd) > now);
 }

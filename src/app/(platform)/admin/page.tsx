@@ -5,7 +5,7 @@ import { ButtonLink } from "@/components/ui/button";
 import { Card } from "@/components/ui/primitives";
 import { requirePermission } from "@/lib/auth";
 import { repo } from "@/lib/data";
-import { can, formatPence } from "@/lib/policy";
+import { can, formatPence, isPaidMembership } from "@/lib/policy";
 import { formatDate, timeAgo } from "@/lib/utils";
 
 const DAY = 86_400_000;
@@ -28,10 +28,13 @@ export default async function AdminOverview() {
   // Server component rendered per request: "now" is intentionally request-time.
   // eslint-disable-next-line react-hooks/purity
   const now = Date.now();
-  const active = memberships.filter((m) => ["active", "past_due"].includes(m.status) && m.currentPeriodEnd && new Date(m.currentPeriodEnd).getTime() > now);
-  const revenue = active.reduce((a, m) => a + m.amountPence, 0);
-  const renewingSoon = active.filter((m) => new Date(m.currentPeriodEnd!).getTime() - now < 30 * DAY);
-  const cancelling = active.filter((m) => m.cancelAtPeriodEnd).length;
+  const active = memberships.filter((m) => isPaidMembership(m, new Date(now)));
+  const annual = active.filter((m) => m.plan !== "lifetime");
+  const lifetime = active.filter((m) => m.plan === "lifetime");
+  const annualRevenue = annual.reduce((a, m) => a + m.amountPence, 0);
+  const lifetimeRevenue = lifetime.reduce((a, m) => a + m.amountPence, 0);
+  const renewingSoon = annual.filter((m) => new Date(m.currentPeriodEnd!).getTime() - now < 30 * DAY);
+  const cancelling = annual.filter((m) => m.cancelAtPeriodEnd).length;
   const pending = apps.filter((a) => a.status === "pending" || a.status === "more_info").length;
   const upcoming = events.filter((e) => e.status === "published" && new Date(e.startsAt).getTime() > now);
   const activeRsvps = rsvps.filter((x) => x.status === "confirmed" && upcoming.some((e) => e.id === x.eventId));
@@ -62,7 +65,7 @@ export default async function AdminOverview() {
       />
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         <Stat label="Total accounts" value={profiles.length} sub={`${referrals} via referral`} />
-        <Stat label="Active paid memberships" value={active.length} accent sub={`${formatPence(revenue)} annual revenue`} />
+        <Stat label="Active paid memberships" value={active.length} accent sub={`${annual.length} annual (${formatPence(annualRevenue)}/yr) · ${lifetime.length} lifetime (${formatPence(lifetimeRevenue)})`} />
         <Stat label="Pending applications" value={pending} sub={<Link href="/admin/applications" className="underline">Review →</Link>} />
         <Stat label="Renewals in 30 days" value={renewingSoon.length} sub={`${cancelling} set to cancel`} />
         <Stat label="Upcoming events" value={upcoming.length} />

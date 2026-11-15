@@ -25,3 +25,6 @@ export const INTEREST_OPTIONS = [
   "Finding a co-founder",
   "Mentoring",
 ];
+
+/** Minimum sponsorship, in pounds. */
+export const SPONSOR_MIN_POUNDS = 500;

@@ -1,15 +1,16 @@
 import { NextResponse } from "next/server";
 import type Stripe from "stripe";
 import { isSupabaseConfigured } from "@/lib/config";
-import { upsertMembershipAsService } from "@/lib/data/service";
+import { getMembershipAsService, upsertMembershipAsService } from "@/lib/data/service";
 import { sendEmail, templates } from "@/lib/email";
 import { formatDate } from "@/lib/utils";
-import { mapSubscriptionStatus, periodEnd, stripe, tierForPriceId } from "@/lib/stripe";
+import { lifetimePriceId, mapSubscriptionStatus, periodEnd, stripe, tierForPriceId } from "@/lib/stripe";
+import type { Tier } from "@/lib/types";
 import { createSupabaseAdmin } from "@/lib/supabase/server";
 
 /**
  * Stripe webhook — the ONLY path that activates, renews or ends membership.
- * Configure in Stripe: checkout.session.completed, customer.subscription.created,
+ * Configure in Stripe: checkout.session.completed, checkout.session.async_payment_succeeded, customer.subscription.created,
  * customer.subscription.updated, customer.subscription.deleted, invoice.payment_failed
  */
 export async function POST(req: Request) {
@@ -39,7 +40,14 @@ export async function POST(req: Request) {
         if (session.mode === "subscription" && session.subscription) {
           const sub = await stripe().subscriptions.retrieve(String(session.subscription));
           await syncSubscription(sub, { activationEmail: true });
+        } else if (session.mode === "payment" && session.metadata?.plan === "lifetime") {
+          await activateLifetime(session);
         }
+        break;
+      }
+      case "checkout.session.async_payment_succeeded": {
+        const session = event.data.object;
+        if (session.mode === "payment" && session.metadata?.plan === "lifetime") await activateLifetime(session);
         break;
       }
       case "customer.subscription.created":
@@ -66,13 +74,17 @@ export async function POST(req: Request) {
 async function syncSubscription(sub: Stripe.Subscription, opts: { activationEmail?: boolean } = {}) {
   const userId = sub.metadata?.user_id;
   if (!userId) throw new Error(`Subscription ${sub.id} has no user_id metadata`);
+  // A lifetime member's old annual subscription must never downgrade them.
+  const existing = await getMembershipAsService(userId);
+  if (existing?.plan === "lifetime") return;
   const item = sub.items.data[0];
-  const tier = tierForPriceId(item?.price?.id) ?? (sub.metadata?.tier === "essex_alumni" ? "essex_alumni" : "standard");
+  const tier = tierForPriceId(item?.price?.id) ?? metaTier(sub.metadata?.tier);
   const status = mapSubscriptionStatus(sub.status);
   const end = periodEnd(sub);
   await upsertMembershipAsService({
     userId,
     tier,
+    plan: "annual",
     status,
     currentPeriodEnd: end,
     cancelAtPeriodEnd: sub.cancel_at_period_end,
@@ -85,4 +97,37 @@ async function syncSubscription(sub: Stripe.Subscription, opts: { activationEmai
     const { data } = await admin.from("applications").select("email, full_name").eq("user_id", userId).maybeSingle();
     if (data) await sendEmail(data.email, templates.membershipActivated(String(data.full_name).split(" ")[0], formatDate(end)));
   }
+}
+
+function metaTier(t: string | undefined): Tier {
+  return t === "essex_student" || t === "essex_alumni" ? t : "standard";
+}
+
+/** One-off lifetime payment: verify it really is the lifetime Price and is paid. */
+async function activateLifetime(session: Stripe.Checkout.Session) {
+  const userId = session.metadata?.user_id;
+  if (!userId) throw new Error(`Checkout ${session.id} has no user_id metadata`);
+  if (session.payment_status !== "paid") return; // async methods confirm later via checkout.session.async_payment_succeeded
+  const items = await stripe().checkout.sessions.listLineItems(session.id, { limit: 5 });
+  if (!items.data.some((li) => li.price?.id === lifetimePriceId())) throw new Error(`Checkout ${session.id} is not a lifetime purchase`);
+
+  // Upgrading from annual: cancel the subscription now so they're never billed again.
+  const existing = await getMembershipAsService(userId);
+  if (existing?.stripeSubscriptionId) {
+    await stripe().subscriptions.cancel(existing.stripeSubscriptionId).catch((e) => console.error("[stripe] cancel after lifetime", e));
+  }
+  await upsertMembershipAsService({
+    userId,
+    tier: metaTier(session.metadata?.tier),
+    plan: "lifetime",
+    status: "active",
+    currentPeriodEnd: null,
+    cancelAtPeriodEnd: false,
+    stripeCustomerId: typeof session.customer === "string" ? session.customer : (session.customer?.id ?? null),
+    stripeSubscriptionId: null,
+    amountPence: session.amount_total ?? 0,
+  });
+  const admin = createSupabaseAdmin();
+  const { data } = await admin.from("applications").select("email, full_name").eq("user_id", userId).maybeSingle();
+  if (data) await sendEmail(data.email, templates.lifetimeActivated(String(data.full_name).split(" ")[0]));
 }

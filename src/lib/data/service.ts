@@ -72,9 +72,17 @@ export async function upsertMembershipAsService(m: Omit<Membership, "updatedAt">
   if (!isSupabaseConfigured) throw new Error("Membership writes require Supabase (no demo payments).");
   const admin = createSupabaseAdmin();
   const { error } = await admin.from("memberships").upsert({
-    user_id: m.userId, tier: m.tier, status: m.status, current_period_end: m.currentPeriodEnd,
+    user_id: m.userId, tier: m.tier, plan: m.plan, status: m.status, current_period_end: m.currentPeriodEnd,
     cancel_at_period_end: m.cancelAtPeriodEnd, stripe_customer_id: m.stripeCustomerId,
     stripe_subscription_id: m.stripeSubscriptionId, amount_pence: m.amountPence, updated_at: new Date().toISOString(),
   });
   if (error) throw new Error(error.message);
+}
+
+/** Webhook-only: current membership plan/subscription for a user. */
+export async function getMembershipAsService(userId: string): Promise<{ plan: string; stripeSubscriptionId: string | null } | null> {
+  if (!isSupabaseConfigured) return null;
+  const admin = createSupabaseAdmin();
+  const { data } = await admin.from("memberships").select("plan, stripe_subscription_id").eq("user_id", userId).maybeSingle();
+  return data ? { plan: data.plan, stripeSubscriptionId: data.stripe_subscription_id } : null;
 }

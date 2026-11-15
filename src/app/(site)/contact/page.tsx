@@ -18,6 +18,7 @@ export default function ContactPage() {
             ["General", siteConfig.contactEmail],
             ["Speak at an event", "Tell us your topic using the form."],
             ["Mentor members", "Experienced founder or specialist? We'd love your help."],
+            ["Sponsorship", "Recruiters, investors, industry leaders and funders: see our sponsors page. Sponsorships from £500."],
             ["Partnerships", "We only announce partners once formally agreed."],
           ].map(([t, b]) => (
             <div key={t} className="border-t border-line pt-5">
@@ -37,6 +38,7 @@ export default function ContactPage() {
                 <option>General question</option>
                 <option>Speaking</option>
                 <option>Mentoring</option>
+                <option>Sponsorship</option>
                 <option>Partnership</option>
                 <option>Press</option>
                 <option>Privacy / data request</option>

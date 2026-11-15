@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 const faqs = [
   {
     q: "What is Y Connector?",
-    a: "A grassroots, youth-led community for university students, recent graduates and young founders who want to build: businesses, products, skills and careers in the digital economy. We combine a members-only community platform with monthly in-person and online experiences.",
+    a: "A grassroots, youth-led community for university students, graduates and young founders who want to build: businesses, products, skills and careers in the digital economy. We combine a members-only community platform with monthly in-person and online experiences.",
   },
   {
     q: "Why was it created?",
@@ -21,7 +21,7 @@ const faqs = [
   },
   {
     q: "Who is it for?",
-    a: "Current university students, recent graduates and young founders under 38: engineers, marketers, designers, economists, data scientists and anyone with an idea and the drive to learn what it takes to make it real.",
+    a: "Current university students, graduates and young founders under 38: engineers, marketers, designers, economists, data scientists and anyone with an idea and the drive to learn what it takes to make it real.",
   },
   {
     q: "What are we trying to change?",
@@ -29,7 +29,7 @@ const faqs = [
   },
   {
     q: "How do we operate?",
-    a: "Members fund the community through a modest annual membership. At least one main event runs each month, each built around a principal speaker. Between events, the community lives online in a members-only forum, talent directory and learning hub. Members propose topics, run sessions, and help shape what we become.",
+    a: "Members fund the community through a modest annual or one-off lifetime membership. At least one main event runs each month, each built around a principal speaker. Between events, the community lives online in a members-only forum, talent directory and learning hub. Members propose topics, run sessions, and help shape what we become.",
   },
   {
     q: "How is this different from a networking club?",

@@ -20,14 +20,16 @@ export default async function JoinPage({ searchParams }: { searchParams: Promise
   return (
     <AuthShell
       title={viewer?.application ? "Update your application" : "Apply to join."}
-      intro="Takes about four minutes. We'll verify your eligibility, then invite you to activate your annual membership."
+      intro="Takes about four minutes. We'll verify your eligibility, then invite you to activate an annual or lifetime membership."
       side={
         <>
           <p className="text-3xl leading-tight font-bold tracking-tight">Don&apos;t just prepare for the future. <span className="text-sun">Participate in building it.</span></p>
           <ul className="mt-10 space-y-4 text-sm text-white/75">
-            <li className="flex justify-between border-b border-white/10 pb-3"><span>Essex alumni</span><span className="font-semibold text-white">{formatPence(settings.priceEssexPence)}/yr</span></li>
-            <li className="flex justify-between border-b border-white/10 pb-3"><span>Other eligible members</span><span className="font-semibold text-white">{formatPence(settings.priceStandardPence)}/yr</span></li>
-            <li className="pt-2 text-white/50">Students & recent graduates under {settings.maxAgeExclusive}. Pay only after verification.</li>
+            <li className="flex justify-between border-b border-white/10 pb-3"><span>Essex students</span><span className="font-semibold text-white">{formatPence(settings.priceEssexStudentPence)}/yr</span></li>
+            <li className="flex justify-between border-b border-white/10 pb-3"><span>Essex alumni</span><span className="font-semibold text-white">{formatPence(settings.priceEssexAlumniPence)}/yr</span></li>
+            <li className="flex justify-between border-b border-white/10 pb-3"><span>Other students &amp; graduates</span><span className="font-semibold text-white">{formatPence(settings.priceStandardPence)}/yr</span></li>
+            <li className="flex justify-between border-b border-white/10 pb-3"><span>Lifetime (any eligible member)</span><span className="font-semibold text-sun">{formatPence(settings.priceLifetimePence)} once</span></li>
+            <li className="pt-2 text-white/50">Students &amp; graduates under {settings.maxAgeExclusive}. Pay only after verification.</li>
           </ul>
         </>
       }

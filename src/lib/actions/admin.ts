@@ -28,7 +28,8 @@ export async function reviewApplication(fd: FormData) {
   await assertPermission("reviewApplications");
   const status = str(fd, "status") as ApplicationStatus;
   if (!["verified", "rejected", "more_info", "pending"].includes(status)) throw new Error("Invalid status");
-  const tier = (str(fd, "tier") === "essex_alumni" ? "essex_alumni" : "standard") as Tier;
+  const rawTier = str(fd, "tier");
+  const tier: Tier = rawTier === "essex_student" || rawTier === "essex_alumni" ? rawTier : "standard";
   const updated = await repo().reviewApplication(str(fd, "id"), { status, tier, note: str(fd, "note", 1000) });
   if (updated && status !== "pending") {
     await sendEmail(updated.email, templates.applicationDecision(updated.fullName.split(" ")[0], status, updated.reviewerNote));
@@ -201,10 +202,12 @@ export async function updateSettings(_: ActionState, fd: FormData): Promise<Acti
   };
   try {
     const patch: Partial<PlatformSettings> = {
-      recentAlumniYears: int("recentAlumniYears", 0, 20),
+      recentAlumniYears: int("recentAlumniYears", 0, 50),
       maxAgeExclusive: int("maxAgeExclusive", 18, 100),
       verificationRetentionDays: int("verificationRetentionDays", 7, 730),
-      priceEssexPence: int("priceEssexPence", 0, 100000),
+      priceEssexStudentPence: int("priceEssexStudentPence", 0, 100000),
+      priceEssexAlumniPence: int("priceEssexAlumniPence", 0, 100000),
+      priceLifetimePence: int("priceLifetimePence", 0, 1000000),
       priceStandardPence: int("priceStandardPence", 0, 100000),
       requireProofOfStatus: fd.get("requireProofOfStatus") === "on",
       essexUniversityNames: str(fd, "essexUniversityNames", 500).split(",").map((s) => s.trim()).filter(Boolean),

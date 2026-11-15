@@ -10,22 +10,24 @@ import { formatPence } from "@/lib/policy";
 
 export const metadata: Metadata = {
   title: "Membership",
-  description: "Annual Y Connector membership: £30/year for Essex alumni, £50/year for other eligible students and recent graduates.",
+  description: "Y Connector membership: £30/year for Essex students, £40/year for Essex alumni, £50/year for other students and graduates, or £350 for life. Open to under-38s.",
 };
 
 export default async function MembershipPage() {
   const s = await repo().getSettings();
   const terms = [
-    { icon: CalendarClock, title: "Annual, not monthly", body: `You pay once for 12 months of access: ${formatPence(s.priceEssexPence)} or ${formatPence(s.priceStandardPence)} depending on your tier.` },
-    { icon: BadgeCheck, title: "Renews each year", body: "Membership renews automatically on your anniversary so you don't lose access. We email you before every renewal." },
-    { icon: ShieldCheck, title: "Cancel any time", body: "Turn off renewal from your billing settings. You keep access until the end of the year you've paid for." },
+    { icon: CalendarClock, title: "Annual, not monthly", body: `One payment covers 12 months: ${formatPence(s.priceEssexStudentPence)} for Essex students, ${formatPence(s.priceEssexAlumniPence)} for Essex alumni, ${formatPence(s.priceStandardPence)} for everyone else.` },
+    { icon: BadgeCheck, title: "Or pay once, for life", body: `Lifetime membership is a single ${formatPence(s.priceLifetimePence)} payment. No renewals, ever. You can upgrade from annual at any time.` },
+    { icon: ShieldCheck, title: "Cancel any time", body: "Annual plans renew automatically. Turn off renewal from your billing settings and keep access until the end of the year you've paid for." },
   ];
   const faqs = [
     { q: "Are all events and courses free for members?", a: "Many events and all core learning resources are included in membership. Some special events or future intensive programmes may be priced separately. Each listing clearly says what's included." },
     { q: "How does the prototype programme work?", a: "Over 10 months you get two 2-hour sessions a month: one online and one hybrid in person. You can join with an idea at any stage and work towards a working prototype." },
     { q: "Does membership guarantee funding?", a: "No. Membership gives you access to non-VC seed-corn funding opportunities and a public prototype listing that potential VC investors can see. Each funding opportunity has its own criteria, and Y Connector doesn't pool member money, offer investments or give financial advice." },
     { q: "Who sees my profile if I opt in to talent dissemination?", a: "Industry partners looking for emerging talent. It's off by default; you switch it on or off any time in your profile settings." },
-    { q: "What counts as a “recent” graduate?", a: `At the moment, someone who graduated within the last ${s.recentAlumniYears} years. Our team reviews this definition periodically, and the current rule is always shown here.` },
+    { q: "Who is eligible?", a: `Anyone under ${s.maxAgeExclusive} who is a current university student or a university graduate.${s.recentAlumniYears > 0 ? ` Graduates must have graduated within the last ${s.recentAlumniYears} years.` : ""} Your price depends on whether you study or studied at the University of Essex.` },
+    { q: "Which price do I pay?", a: `${formatPence(s.priceEssexStudentPence)}/year if you're a current University of Essex student, ${formatPence(s.priceEssexAlumniPence)}/year if you're an Essex graduate, and ${formatPence(s.priceStandardPence)}/year for students and graduates of other universities. We confirm your tier when we verify your status.` },
+    { q: "How does lifetime membership work?", a: `You pay ${formatPence(s.priceLifetimePence)} once and keep full membership for life, with no renewals. If you're on an annual plan, upgrading cancels your subscription so you're never charged twice.` },
     { q: "Why do you verify eligibility?", a: "Y Connector is built for students and early-career founders. Verification keeps the community focused and trusted. We collect the minimum information needed and delete verification documents after a decision." },
     { q: "When does my access start?", a: "As soon as your eligibility is verified and your payment has been confirmed by our payment provider. Usually within minutes of paying." },
     { q: "What happens if a renewal payment fails?", a: "We'll email you and give you time to update your card. If payment can't be collected, community access pauses until it's resolved." },
@@ -36,7 +38,7 @@ export default async function MembershipPage() {
       <PageHero
         eyebrow="Membership"
         title={<>Your network. Your skills. <span className="mark">Your next move.</span></>}
-        intro="One simple annual membership gives you the community, the events, the learning and the people to build with."
+        intro="One membership, paid yearly or once for life, gives you the community, the events, the learning and the people to build with."
       >
         <ButtonLink href="/join" size="lg">
           Apply now <ArrowRight className="h-4 w-4" />
@@ -85,10 +87,10 @@ export default async function MembershipPage() {
             <SectionHeading eyebrow="Eligibility" title="Who can join?" intro="Y Connector is designed for people at the start of their building journey." />
             <ul className="mt-8 space-y-4">
               {[
+                `Under ${s.maxAgeExclusive} years old`,
                 "Current university students",
-                `Recent university graduates (within ${s.recentAlumniYears} years of graduating)`,
-                "Young founders and aspiring entrepreneurs who are students or recent graduates",
-                `Members must be under ${s.maxAgeExclusive}`,
+                s.recentAlumniYears > 0 ? `University graduates (within ${s.recentAlumniYears} years of graduating)` : "University graduates",
+                "Including young founders and aspiring entrepreneurs who are students or graduates",
               ].map((x) => (
                 <li key={x} className="flex gap-3">
                   <GraduationCap className="mt-0.5 h-5 w-5 shrink-0 text-ink" aria-hidden />
@@ -97,7 +99,7 @@ export default async function MembershipPage() {
               ))}
             </ul>
             <p className="mt-6 text-sm text-muted">
-              The <strong className="text-ink">Essex Alumni</strong> rate applies to recent graduates of the University of Essex.
+              <strong className="text-ink">Essex Student</strong> and <strong className="text-ink">Essex Alumni</strong> rates apply to current students and graduates of the University of Essex.
             </p>
           </div>
           <div>

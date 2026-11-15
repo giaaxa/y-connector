@@ -144,8 +144,8 @@ export default async function HomePage() {
             <div>
               <SectionHeading
                 eyebrow="07 — Membership"
-                title={<span id="membership-heading">One year. Everything you need to start building.</span>}
-                intro="Two simple annual tiers with the same core benefits: AI-FincubeX non-degree training, a 10-month prototype development programme, technical advice, routes to seed-corn funding, a prototype listing for investors and opt-in talent introductions to industry. Membership opens once your student or recent-graduate status is verified."
+                title={<span id="membership-heading">One membership. Everything you need to start building.</span>}
+                intro="Three annual prices, or pay once for life, with the same core benefits on every plan: AI-FincubeX non-degree training, a 10-month prototype development programme, technical advice, routes to seed-corn funding, a prototype listing for investors and opt-in talent introductions to industry. Open to students and graduates under 38."
               />
               <ButtonLink href="/membership" variant="link" className="mt-6">
                 What&apos;s included &amp; who&apos;s eligible <ArrowUpRight className="h-4 w-4" />
@@ -198,7 +198,7 @@ function Hero() {
             </ButtonLink>
           </div>
           <p className="mt-6 text-sm text-subtle animate-rise" style={{ animationDelay: "560ms" }}>
-            For university students, recent graduates and young founders under 38.
+            For university students, graduates and young founders under 38.
           </p>
         </div>
         <div className="animate-rise" style={{ animationDelay: "200ms" }}>
@@ -322,8 +322,8 @@ function Ecosystem() {
 function HowItWorks() {
   const steps = [
     { n: "01", title: "Apply to join", body: "Tell us about yourself, your university and what you want to build. Takes about four minutes." },
-    { n: "02", title: "Verify your eligibility", body: "Confirm your student or recent-graduate status with a university email or a quick document check." },
-    { n: "03", title: "Activate your annual membership", body: "Once verified, pay securely once a year: £30 for Essex alumni, £50 for other eligible members." },
+    { n: "02", title: "Verify your eligibility", body: "Confirm you're under 38 and a student or graduate, with a university email or a quick document check." },
+    { n: "03", title: "Activate your membership", body: "Once verified, pay securely: £30/year for Essex students, £40 for Essex alumni, £50 for everyone else, or £350 once for life." },
     { n: "04", title: "Connect, learn and build", body: "Unlock the forum, directory, events and learning hub, and start building with your people." },
   ];
   return (

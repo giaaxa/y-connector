@@ -8,7 +8,7 @@ import { Avatar, Badge, Card, EmptyState, Notice } from "@/components/ui/primiti
 import { startCheckout } from "@/lib/actions/billing";
 import { respondCollab } from "@/lib/actions/member";
 import { requireViewer } from "@/lib/auth";
-import { isDemoMode, isStripeConfigured } from "@/lib/config";
+import { isDemoMode, isLifetimeConfigured, isStripeConfigured } from "@/lib/config";
 import { repo } from "@/lib/data";
 import { formatPence, tierLabel, tierPricePence } from "@/lib/policy";
 import type { Viewer } from "@/lib/types";
@@ -69,7 +69,7 @@ async function ApplicantJourney({ v, sp }: { v: Viewer; sp: Record<string, strin
       state: a.status === "verified" ? "done" : a.status === "rejected" ? "fail" : ("current" as const),
       note: { pending: "Under review", verified: "Verified", rejected: "Not approved", more_info: "More info needed" }[a.status],
     },
-    { label: "Membership", state: a.status === "verified" ? ("current" as const) : ("todo" as const), note: paidPending ? "Confirming payment" : "Annual payment" },
+    { label: "Membership", state: a.status === "verified" ? ("current" as const) : ("todo" as const), note: paidPending ? "Confirming payment" : "Annual or lifetime" },
     { label: "Connect & build", state: "todo" as const, note: "Full access" },
   ];
   const price = tierPricePence(a.tier, settings);
@@ -141,27 +141,30 @@ async function ApplicantJourney({ v, sp }: { v: Viewer; sp: Record<string, strin
       )}
       {a.status === "verified" && (
         <Card className="overflow-hidden">
-          <div className="grid gap-8 p-6 sm:p-8 md:grid-cols-[1fr_auto] md:items-center">
-            <div>
-              <Badge tone="ok"><Check className="h-3 w-3" /> Eligibility verified</Badge>
-              <p className="mt-4 text-2xl font-bold tracking-tight">Activate your annual membership</p>
-              <p className="mt-1 text-muted">
-                {tierLabel(a.tier)} · <strong className="text-ink">{formatPence(price)} per year</strong>. Renews annually, cancel any time.
-              </p>
-              {v.membership?.status === "past_due" && <p className="mt-2 text-sm text-warn">Your last payment failed. Update your card in billing.</p>}
+          <div className="p-6 sm:p-8">
+            <Badge tone="ok"><Check className="h-3 w-3" /> Eligibility verified · {tierLabel(a.tier)}</Badge>
+            <p className="mt-4 text-2xl font-bold tracking-tight">Choose how to activate your membership</p>
+            {v.membership?.status === "past_due" && <p className="mt-2 text-sm text-warn">Your last payment failed. Update your card in billing.</p>}
+            <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2">
+              <PlanOption
+                plan="annual"
+                title="Annual"
+                price={`${formatPence(price)} / year`}
+                note="Renews yearly · cancel any time"
+                available={isStripeConfigured}
+              />
+              <PlanOption
+                plan="lifetime"
+                title="Lifetime"
+                price={`${formatPence(settings.priceLifetimePence)} once`}
+                note="Pay once · never renew"
+                available={isLifetimeConfigured}
+                featured
+              />
             </div>
-            <div className="space-y-2">
-              {isStripeConfigured ? (
-                <form action={startCheckout}>
-                  <Button size="lg" className="w-full"><CreditCard className="h-4 w-4" /> Pay securely with Stripe</Button>
-                </form>
-              ) : (
-                <>
-                  <Button size="lg" disabled className="w-full"><CreditCard className="h-4 w-4" /> Pay with Stripe</Button>
-                  <p className="max-w-60 text-xs text-muted">{isDemoMode ? "Preview mode: payments aren't connected, so membership can't be activated here." : "Stripe isn't configured yet."}</p>
-                </>
-              )}
-            </div>
+            {!isStripeConfigured && (
+              <p className="mt-4 text-xs text-muted">{isDemoMode ? "Preview mode: payments aren't connected, so membership can't be activated here." : "Stripe isn't configured yet."}</p>
+            )}
           </div>
           <div className="border-t border-line bg-mist px-6 py-3 text-xs text-muted sm:px-8">Your access activates once Stripe confirms the payment to us. You won&apos;t be charged twice.</div>
         </Card>
@@ -283,7 +286,7 @@ async function MemberHub({ v }: { v: Viewer }) {
           </p>
           {m && (
             <p className="mt-1 text-sm text-muted">
-              {tierLabel(m.tier)} · {m.cancelAtPeriodEnd ? "ends" : "renews"} {m.currentPeriodEnd ? formatDate(m.currentPeriodEnd) : "—"}
+              {m.plan === "lifetime" ? "Lifetime member · never expires" : <>{tierLabel(m.tier)} · {m.cancelAtPeriodEnd ? "ends" : "renews"} {m.currentPeriodEnd ? formatDate(m.currentPeriodEnd) : "—"}</>}
             </p>
           )}
           <ButtonLink href="/account/billing" variant="link" size="sm" className="mt-4">Manage billing</ButtonLink>
@@ -381,5 +384,19 @@ async function MemberHub({ v }: { v: Viewer }) {
         </Card>
       </div>
     </>
+  );
+}
+
+function PlanOption({ plan, title, price, note, available, featured = false }: { plan: "annual" | "lifetime"; title: string; price: string; note: string; available: boolean; featured?: boolean }) {
+  return (
+    <form action={startCheckout} className={cn("flex flex-col rounded-2xl border p-5", featured ? "border-ink bg-ink text-white" : "border-line")}>
+      <input type="hidden" name="plan" value={plan} />
+      <p className={cn("eyebrow", featured ? "text-sun" : "text-muted")}>{title}</p>
+      <p className="mt-2 text-3xl font-bold tracking-tight">{price}</p>
+      <p className={cn("mt-1 text-sm", featured ? "text-white/60" : "text-muted")}>{note}</p>
+      <Button size="md" variant={featured ? "primary" : "dark"} disabled={!available} className="mt-5 w-full">
+        <CreditCard className="h-4 w-4" /> {available ? `Pay ${title.toLowerCase()} with Stripe` : "Payments not connected"}
+      </Button>
+    </form>
   );
 }

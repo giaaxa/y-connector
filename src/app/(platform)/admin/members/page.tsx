@@ -38,7 +38,7 @@ export default async function MembersAdminPage({ searchParams }: { searchParams:
               </td>
               <td className="px-4 py-3">{a ? <Badge tone={a.status === "verified" ? "ok" : a.status === "rejected" ? "bad" : "warn"}>{a.status.replace("_", " ")}</Badge> : "—"}</td>
               <td className="px-4 py-3">{m ? <Badge tone={m.status === "active" ? "ok" : "neutral"}>{m.status}</Badge> : <span className="text-muted">none</span>}</td>
-              <td className="px-4 py-3 text-muted">{m?.currentPeriodEnd ? formatDate(m.currentPeriodEnd) : "—"}{m?.cancelAtPeriodEnd && " (ends)"}</td>
+              <td className="px-4 py-3 text-muted">{m?.plan === "lifetime" ? "Lifetime" : m?.currentPeriodEnd ? formatDate(m.currentPeriodEnd) : "—"}{m?.cancelAtPeriodEnd && " (ends)"}</td>
               <td className="px-4 py-3 tabular-nums">{refs}</td>
               <td className="px-4 py-3">
                 {canRoles ? (

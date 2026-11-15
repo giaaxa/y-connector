@@ -41,7 +41,7 @@ Without Supabase credentials the app runs in **preview mode**:
 ### 1. Supabase
 
 1. Create a project at [supabase.com](https://supabase.com). Choose a UK or EU region for GDPR.
-2. Run `supabase/migrations/0001_schema.sql` in the SQL editor, or use `supabase db push`. This creates:
+2. Run the files in `supabase/migrations/` in order (`0001`, `0002`, `0003`) in the SQL editor, or use `supabase db push`. `0001` creates:
    - all tables and helper functions;
    - triggers;
    - **Row Level Security** policies;
@@ -59,10 +59,19 @@ Without Supabase credentials the app runs in **preview mode**:
 
 ### 2. Stripe
 
-1. Create a product, "Y Connector Membership", with two **recurring, yearly** prices: £30 (Essex Alumni) and £50 (Eligible Member).
-2. Put the two price IDs in `STRIPE_PRICE_ESSEX_ALUMNI` and `STRIPE_PRICE_STANDARD`.
+1. Create a product, "Y Connector Membership", with three **recurring, yearly** prices and one **one-off** price:
+
+   | Plan | Price | Environment variable |
+   |---|---|---|
+   | Essex students | £30 / year | `STRIPE_PRICE_ESSEX_STUDENT` |
+   | Essex alumni | £40 / year | `STRIPE_PRICE_ESSEX_ALUMNI` |
+   | Other students & graduates | £50 / year | `STRIPE_PRICE_STANDARD` |
+   | Lifetime (any eligible member) | £350 once | `STRIPE_PRICE_LIFETIME` |
+
+2. Put the price IDs in those variables. Lifetime is hidden until `STRIPE_PRICE_LIFETIME` is set.
 3. Add a webhook endpoint at `https://YOUR_DOMAIN/api/stripe/webhook` that sends these events:
    - `checkout.session.completed`
+   - `checkout.session.async_payment_succeeded` (lifetime payments by bank transfer etc.)
    - `customer.subscription.created`
    - `customer.subscription.updated`
    - `customer.subscription.deleted`
@@ -84,11 +93,12 @@ Copy `.env.example` to `.env.local` and fill in the values. On Vercel, add the s
 
 | Rule | Where |
 |---|---|
-| Membership is active only when the applicant is **verified AND** a Stripe-confirmed, unexpired subscription exists | `isMembershipActive()` in `src/lib/policy.ts`, mirrored by `is_active_member()` in SQL |
-| The price is set server-side from the admin-confirmed tier | `startCheckout()` in `src/lib/actions/billing.ts` (no amount comes from the browser) |
+| Membership is active only when the applicant is **verified AND** has either a Stripe-confirmed, unexpired annual subscription or a paid lifetime membership | `isMembershipActive()` in `src/lib/policy.ts`, mirrored by `is_active_member()` in SQL |
+| The price is set server-side from the admin-confirmed tier (Essex student / Essex alumni / other) or the lifetime plan | `startCheckout()` in `src/lib/actions/billing.ts` (no amount comes from the browser) |
 | The checkout success page never activates access | Only the signed webhook in `src/app/api/stripe/webhook/route.ts` writes the `memberships` table; it is idempotent via `stripe_events` |
 | Applicants can't verify themselves, and members can't pin or remove posts | Postgres `protect_*` triggers plus RLS |
-| Under-38 limit and recent-alumni window | `checkEligibility()`. Both values are editable in **Admin → Settings**. The "recent alumni" default of 5 years is **provisional** |
+| Under-38 limit | `checkEligibility()`. Editable in **Admin → Settings**, which also has an optional graduation-year limit (off by default) |
+| Lifetime upgrades never double-bill | The webhook cancels any annual subscription when a lifetime payment succeeds, and ignores later subscription events for lifetime members |
 | Event capacity and members-only events | `rsvp_to_event()` SQL function (row-locked) and the server action; overflow goes to a waitlist |
 | Forum is private | RLS on `posts` and `replies`. Only threads an admin publishes as a "public preview" appear publicly |
 | DOB and documents are private | `applications` table and `verification` bucket are owner- and admin-only. Documents use 60-second signed URLs and are deleted automatically N days after a decision |
@@ -118,6 +128,7 @@ supabase/           schema, RLS and seed SQL
 
 - **Logo.** `src/components/brand/logo.tsx` is an SVG recreation. Add the official file to `public/brand/` and set `NEXT_PUBLIC_LOGO_SRC`.
 - **Contact and social links** in `src/lib/config.ts`.
+- **Sponsorship.** `/sponsors` enquiries (minimum £500, set in `src/lib/constants.ts`) arrive in Admin → Overview → Contact messages. Add sponsor logos only once agreements are signed.
 - **Sample content.** Everything flagged `is_sample` / "Example" (events, discussions, courses, startup concepts) is illustrative. Speakers are deliberately "to be announced".
 - **Team and governance** profile slots on `/about`.
 - **Legal pages** (`/legal/*`) are drafts. Get UK legal review, including the entity name, ICO registration and refund terms.

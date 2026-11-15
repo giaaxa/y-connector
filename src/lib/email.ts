@@ -24,7 +24,7 @@ export const templates = {
           : "Update on your Y Connector application",
     text: `Hi ${name},\n\n${
       status === "verified"
-        ? `Good news — your eligibility has been verified. Activate your annual membership at ${siteConfig.url}/dashboard.`
+        ? `Good news — your eligibility has been verified. Activate your membership (annual or lifetime) at ${siteConfig.url}/dashboard.`
         : status === "more_info"
           ? `We need a bit more information to verify your eligibility. Please update your application at ${siteConfig.url}/dashboard.`
           : "Unfortunately we can't approve your application at this time."
@@ -41,6 +41,10 @@ export const templates = {
   membershipActivated: (name: string, until: string): Template => ({
     subject: "Welcome to Y Connector — your membership is active",
     text: `Hi ${name},\n\nYour annual membership is active until ${until}. Jump in: ${siteConfig.url}/dashboard\n\n— The Y Connector team`,
+  }),
+  lifetimeActivated: (name: string): Template => ({
+    subject: "Welcome to Y Connector, for life",
+    text: `Hi ${name},\n\nYour lifetime membership is active. No renewals, no expiry. Jump in: ${siteConfig.url}/dashboard\n\n— The Y Connector team`,
   }),
   paymentFailed: (): Template => ({
     subject: "Action needed: your Y Connector renewal payment failed",

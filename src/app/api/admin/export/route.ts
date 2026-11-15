@@ -1,6 +1,6 @@
 import { getViewer } from "@/lib/auth";
 import { repo } from "@/lib/data";
-import { can } from "@/lib/policy";
+import { can, isPaidMembership } from "@/lib/policy";
 
 /**
  * Permissioned CSV exports for operations. Deliberately excludes dates of
@@ -18,11 +18,11 @@ export async function GET(req: Request) {
   if (type === "members") {
     const [profiles, memberships, apps] = await Promise.all([r.listProfiles(), r.listMemberships(), r.listApplications()]);
     body = csv([
-      ["name", "email", "university", "city", "application_status", "tier", "membership_status", "renews_or_ends", "joined"],
+      ["name", "email", "university", "city", "application_status", "tier", "plan", "membership_status", "renews_or_ends", "joined"],
       ...profiles.map((p) => {
         const m = memberships.find((x) => x.userId === p.id);
         const a = apps.find((x) => x.userId === p.id);
-        return [p.fullName, a?.email ?? "", p.university, p.city, a?.status ?? "", m?.tier ?? a?.tier ?? "", m?.status ?? "none", m?.currentPeriodEnd ?? "", p.createdAt];
+        return [p.fullName, a?.email ?? "", p.university, p.city, a?.status ?? "", m?.tier ?? a?.tier ?? "", m?.plan ?? "", m?.status ?? "none", m?.plan === "lifetime" ? "never" : (m?.currentPeriodEnd ?? ""), p.createdAt];
       }),
     ]);
   } else if (type === "rsvps") {
@@ -37,7 +37,7 @@ export async function GET(req: Request) {
   } else if (type === "talent") {
     // Talent dissemination: ONLY active members who opted in. No email, DOB or payment data.
     const [profiles, memberships] = await Promise.all([r.listProfiles(), r.listMemberships()]);
-    const active = new Set(memberships.filter((m) => ["active", "past_due"].includes(m.status) && m.currentPeriodEnd && new Date(m.currentPeriodEnd) > new Date()).map((m) => m.userId));
+    const active = new Set(memberships.filter((m) => isPaidMembership(m)).map((m) => m.userId));
     body = csv([
       ["name", "headline", "university", "city", "skills", "interests", "current_projects", "startup_stage", "open_to_collaborate", "portfolio_url"],
       ...profiles

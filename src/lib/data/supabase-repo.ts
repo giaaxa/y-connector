@@ -68,7 +68,7 @@ const toApp = (r: Row): Application => ({
   reviewerNote: r.reviewer_note, submittedAt: r.submitted_at, reviewedAt: r.reviewed_at,
 });
 const toMembership = (r: Row): Membership => ({
-  userId: r.user_id, tier: r.tier, status: r.status, currentPeriodEnd: r.current_period_end,
+  userId: r.user_id, tier: r.tier, plan: r.plan ?? "annual", status: r.status, currentPeriodEnd: r.current_period_end,
   cancelAtPeriodEnd: r.cancel_at_period_end, stripeCustomerId: r.stripe_customer_id,
   stripeSubscriptionId: r.stripe_subscription_id, amountPence: r.amount_pence, updatedAt: r.updated_at,
 });

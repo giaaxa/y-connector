@@ -28,9 +28,13 @@ export const isSupabaseConfigured = Boolean(
 
 export const isStripeConfigured = Boolean(
   process.env.STRIPE_SECRET_KEY &&
+    process.env.STRIPE_PRICE_ESSEX_STUDENT &&
     process.env.STRIPE_PRICE_ESSEX_ALUMNI &&
     process.env.STRIPE_PRICE_STANDARD,
 );
 
 /** Demo mode = no Supabase credentials; uses an in-memory store with sample personas. */
 export const isDemoMode = !isSupabaseConfigured;
+
+/** Lifetime membership is offered only once its one-off Stripe Price is configured. */
+export const isLifetimeConfigured = Boolean(isStripeConfigured && process.env.STRIPE_PRICE_LIFETIME);

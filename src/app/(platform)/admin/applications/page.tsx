@@ -6,7 +6,7 @@ import { Badge, Card, EmptyState } from "@/components/ui/primitives";
 import { reviewApplication } from "@/lib/actions/admin";
 import { requirePermission } from "@/lib/auth";
 import { repo } from "@/lib/data";
-import { ageOn, checkEligibility, isEssexUniversity } from "@/lib/policy";
+import { ageOn, checkEligibility, formatPence, isEssexUniversity, tierLabel, tierPricePence } from "@/lib/policy";
 import type { ApplicationStatus } from "@/lib/types";
 import { cn, formatDate } from "@/lib/utils";
 
@@ -39,7 +39,7 @@ export default async function ApplicationsPage({ searchParams }: { searchParams:
       <div className="space-y-4">
         {list.map((a) => {
           const problems = checkEligibility(a, settings);
-          const essex = isEssexUniversity(a.university, settings) && a.studentStatus === "alumni";
+          const essex = isEssexUniversity(a.university, settings);
           return (
             <Card key={a.id} className="p-5 sm:p-6">
               <div className="flex flex-wrap items-start justify-between gap-3">
@@ -90,8 +90,9 @@ export default async function ApplicationsPage({ searchParams }: { searchParams:
                 <label className="text-sm">
                   <span className="mb-1 block text-xs text-muted">Tier {essex && "(Essex match)"}</span>
                   <select name="tier" defaultValue={a.tier} className="h-10 rounded-xl border border-line bg-white px-3">
-                    <option value="essex_alumni">Essex Alumni (£{settings.priceEssexPence / 100})</option>
-                    <option value="standard">Eligible Member (£{settings.priceStandardPence / 100})</option>
+                    {(["essex_student", "essex_alumni", "standard"] as const).map((t) => (
+                      <option key={t} value={t}>{tierLabel(t)} ({formatPence(tierPricePence(t, settings))}/yr)</option>
+                    ))}
                   </select>
                 </label>
                 <label className="text-sm">

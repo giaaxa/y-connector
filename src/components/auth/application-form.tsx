@@ -98,11 +98,11 @@ export function ApplicationForm({
           <Field label="I am a…" htmlFor="studentStatus" required error={e.studentStatus}>
             <Select id="studentStatus" name="studentStatus" value={status} onChange={(ev) => setStatus(ev.target.value as "student" | "alumni")}>
               <option value="student">Current student</option>
-              <option value="alumni">Recent graduate (alumni)</option>
+              <option value="alumni">Graduate (alumni)</option>
             </Select>
           </Field>
           {status === "alumni" && (
-            <Field label="Graduation year" htmlFor="graduationYear" required error={e.graduationYear} hint={`Within the last ${recentYears} years.`}>
+            <Field label="Graduation year" htmlFor="graduationYear" required error={e.graduationYear} hint={recentYears > 0 ? `Within the last ${recentYears} years.` : undefined}>
               <Input id="graduationYear" name="graduationYear" type="number" inputMode="numeric" min={thisYear - 30} max={thisYear} defaultValue={existing?.graduationYear ?? ""} required aria-invalid={!!e.graduationYear} />
             </Field>
           )}

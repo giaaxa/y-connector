@@ -64,7 +64,7 @@ export default async function UpskillPage({ searchParams }: { searchParams: Prom
             <div className="mt-16">
               <h2 className="text-2xl font-bold tracking-tight">Future programmes</h2>
               <Notice tone="neutral" className="mt-4 max-w-3xl">
-                These are possible intensive programmes that may be offered separately in future. They are <strong>not</strong> part of the current annual membership, and no pricing has been set.
+                These are possible intensive programmes that may be offered separately in future. They are <strong>not</strong> part of the current membership, and no pricing has been set.
               </Notice>
               <div className="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
                 {premium.map((c) => (

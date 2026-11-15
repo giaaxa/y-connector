@@ -1,5 +1,6 @@
 import { ArrowRight, CalendarDays, MapPin, Sparkles } from "lucide-react";
 import type { Metadata } from "next";
+import Link from "next/link";
 import { ActionForm } from "@/components/ui/action-form";
 import { ButtonLink } from "@/components/ui/button";
 import { Checkbox, ChipCheckbox, Field, Input, Textarea } from "@/components/ui/form";
@@ -145,6 +146,10 @@ export default function FestivalPage() {
               <div className="flex gap-3"><dt className="w-28 shrink-0 text-muted">Where</dt><dd className="font-medium">{festivalWhere()}</dd></div>
               <div className="flex gap-3"><dt className="w-28 shrink-0 text-muted">Tickets</dt><dd className="font-medium">Details, including any member benefits, to be announced</dd></div>
             </dl>
+            <p className="mt-8 rounded-2xl bg-sun-soft p-5 text-sm">
+              <strong>Want to sponsor the festival?</strong> Recruiters, investors, industry leaders and funders can sponsor from £500.{" "}
+              <Link href="/sponsors" className="font-semibold underline">See sponsorship →</Link>
+            </p>
           </div>
           <div className="rounded-3xl border border-line p-6 sm:p-10">
             <ActionForm action={registerFestivalInterest} submitLabel="Register interest" pendingLabel="Registering…">

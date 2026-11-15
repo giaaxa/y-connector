@@ -10,7 +10,10 @@ export type Role =
 
 export type ApplicationStatus = "pending" | "verified" | "rejected" | "more_info";
 export type StudentStatus = "student" | "alumni";
-export type Tier = "essex_alumni" | "standard";
+/** Price tier, confirmed by an admin at verification. */
+export type Tier = "essex_student" | "essex_alumni" | "standard";
+/** annual = yearly subscription; lifetime = one-off payment, never expires. */
+export type MembershipPlan = "annual" | "lifetime";
 export type MembershipStatus =
   | "none"
   | "incomplete"
@@ -77,6 +80,7 @@ export interface Application {
 export interface Membership {
   userId: string;
   tier: Tier;
+  plan: MembershipPlan;
   status: MembershipStatus;
   currentPeriodEnd: string | null;
   cancelAtPeriodEnd: boolean;
@@ -266,7 +270,7 @@ export interface CollabRequest {
 }
 
 export interface PlatformSettings {
-  /** How many years after graduation an alum counts as "recent". Admin-configurable. */
+  /** Optional limit on years since graduation. 0 = no limit (age is the only cut-off). Admin-configurable. */
   recentAlumniYears: number;
   /** Applicants must be strictly younger than this age. */
   maxAgeExclusive: number;
@@ -277,8 +281,10 @@ export interface PlatformSettings {
   /** Require a university email OR proof-of-status upload. */
   requireProofOfStatus: boolean;
   /** Shown publicly; Stripe Price IDs are the source of truth for charging. */
-  priceEssexPence: number;
+  priceEssexStudentPence: number;
+  priceEssexAlumniPence: number;
   priceStandardPence: number;
+  priceLifetimePence: number;
   /** Months after which verification documents are deleted post-decision. */
   verificationRetentionDays: number;
 }

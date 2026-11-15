@@ -201,15 +201,19 @@ export const seedMemberships: Membership[] = seedProfiles
   .map((p) => ({
     userId: p.id,
     tier: p.university === "University of Essex" ? "essex_alumni" : "standard",
+    // One sample lifetime member (paid once, never expires).
+    plan: p.id === "u_s6" ? "lifetime" : "annual",
     status: "active",
-    currentPeriodEnd: at(240),
+    currentPeriodEnd: p.id === "u_s6" ? null : at(240),
     cancelAtPeriodEnd: false,
     stripeCustomerId: null,
     stripeSubscriptionId: null,
     amountPence:
-      p.university === "University of Essex"
-        ? DEFAULT_SETTINGS.priceEssexPence
-        : DEFAULT_SETTINGS.priceStandardPence,
+      p.id === "u_s6"
+        ? DEFAULT_SETTINGS.priceLifetimePence
+        : p.university === "University of Essex"
+          ? DEFAULT_SETTINGS.priceEssexAlumniPence
+          : DEFAULT_SETTINGS.priceStandardPence,
     updatedAt: at(-120),
   }));
 

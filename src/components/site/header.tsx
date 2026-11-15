@@ -11,6 +11,7 @@ export const PUBLIC_NAV = [
   { href: "/startups", label: "Startups" },
   { href: "/festival", label: "Festival" },
   { href: "/membership", label: "Membership" },
+  { href: "/sponsors", label: "Sponsors" },
 ];
 
 export async function SiteHeader() {
