@@ -11,12 +11,12 @@ const script = Satisfy({ variable: "--font-script", subsets: ["latin"], weight: 
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
-  title: { default: "Y Connector — Connecting the next generation of builders", template: "%s · Y Connector" },
+  title: { default: "Y Connector — Connecting the next generation of tech builders", template: "%s · Y Connector" },
   description: siteConfig.description,
   openGraph: {
     type: "website",
     siteName: "Y Connector",
-    title: "Y Connector — Connecting the next generation of builders",
+    title: "Y Connector — Connecting the next generation of tech builders",
     description: siteConfig.description,
     locale: "en_GB",
   },

@@ -51,7 +51,7 @@ export function LogoMark({ className, title = "Y Connector" }: { className?: str
 export function LogoFull({ className }: { className?: string }) {
   if (siteConfig.logoSrc) {
     return (
-      <Image src={siteConfig.logoSrc} alt="Y Connector" width={1536} height={1024} className={cn("h-auto w-full", className)} priority />
+      <Image src={siteConfig.logoSrc} alt="Y Connector" width={1024} height={651} className={cn("h-auto w-full", className)} priority />
     );
   }
   return (
@@ -67,15 +67,18 @@ export function LogoFull({ className }: { className?: string }) {
   );
 }
 
-/** Header/footer lock-up: mark + "Y CONNECTOR" wordmark. */
-export function Logo({ className, inverted = false, href = "/" }: { className?: string; inverted?: boolean; href?: string }) {
+/** Header lock-up: the official logo, or the SVG mark + wordmark fallback. */
+export function Logo({ className, imgClassName, inverted = false, href = "/" }: { className?: string; imgClassName?: string; inverted?: boolean; href?: string }) {
+  if (siteConfig.logoSrc) {
+    return (
+      <Link href={href} className={cn("inline-flex shrink-0 items-center", className)} aria-label="Y Connector — home">
+        <Image src={siteConfig.logoSrc} alt="Y Connector" width={1024} height={651} className={cn("h-14 w-auto", imgClassName)} priority />
+      </Link>
+    );
+  }
   return (
     <Link href={href} className={cn("group inline-flex items-center gap-2.5", className)} aria-label="Y Connector — home">
-      {siteConfig.logoSrc ? (
-        <Image src={siteConfig.logoSrc} alt="" width={60} height={40} className="h-9 w-auto" />
-      ) : (
-        <LogoMark className="h-9 w-auto transition-transform duration-500 group-hover:rotate-[-4deg]" title="" />
-      )}
+      <LogoMark className="h-9 w-auto transition-transform duration-500 group-hover:rotate-[-4deg]" title="" />
       <span className={cn("text-[15px] font-extrabold tracking-[0.14em]", inverted ? "text-white" : "text-ink")}>
         Y&nbsp;CONNECTOR
       </span>

@@ -43,7 +43,7 @@ export function SiteFooter() {
         <div>
           <LogoFull className="w-56" />
           <p className="mt-5 max-w-sm text-sm leading-relaxed text-muted">
-            A grassroots, youth-led community connecting the next generation of builders with skills, people and
+            A grassroots, youth-led community connecting the next generation of tech builders with skills, people and
             opportunities.
           </p>
           <p className="mt-5 text-sm">

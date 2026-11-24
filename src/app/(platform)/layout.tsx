@@ -44,8 +44,8 @@ export default async function PlatformLayout({ children }: { children: React.Rea
     <div className="min-h-dvh bg-mist">
       <DemoBanner />
       <header className="sticky top-0 z-30 border-b border-line bg-white/90 backdrop-blur">
-        <div className="flex h-16 items-center gap-4 px-4 sm:px-6">
-          <Logo href="/dashboard" />
+        <div className="flex h-16 items-center gap-4 pr-4 pl-2 sm:pr-6 sm:pl-3">
+          <Logo href="/dashboard" imgClassName="h-14" />
           <form action="/forum" className="ml-auto hidden max-w-sm flex-1 md:block" role="search">
             <label className="relative block">
               <span className="sr-only">Search discussions</span>

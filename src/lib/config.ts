@@ -4,16 +4,13 @@
  */
 export const siteConfig = {
   name: "Y Connector",
-  tagline: "Connecting the next generation of builders.",
+  tagline: "Connecting the next generation of tech builders.",
   description:
     "A grassroots UK community connecting young founders, students and graduates with practical AI and digital skills, each other, and real opportunities.",
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
   contactEmail: "hello@yconnector.example", // PLACEHOLDER — replace before launch
-  /**
-   * Set to "/brand/y-connector-logo.png" (or .svg) once the official logo file
-   * is added to /public/brand. Until then a faithful SVG recreation is used.
-   */
-  logoSrc: process.env.NEXT_PUBLIC_LOGO_SRC ?? "",
+  /** Official logo lock-up (trimmed, transparent PNG in /public/brand). */
+  logoSrc: process.env.NEXT_PUBLIC_LOGO_SRC || "/brand/y-connector-logo.png",
   socials: {
     linkedin: "#", // PLACEHOLDER
     instagram: "#", // PLACEHOLDER

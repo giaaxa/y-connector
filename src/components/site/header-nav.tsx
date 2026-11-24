@@ -41,8 +41,8 @@ export function HeaderNav({ nav, viewer }: { nav: NavItem[]; viewer: ViewerLite 
         scrolled ? "border-line" : "border-transparent",
       )}
     >
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-6 px-5 sm:px-8">
-        <Logo />
+      <div className="flex h-20 w-full items-center justify-between gap-6 pr-5 pl-3 sm:pr-8 sm:pl-5">
+        <Logo imgClassName="h-16" />
         <nav aria-label="Main" className="hidden items-center gap-1 xl:flex">
           {nav.map((item) => (
             <Link
@@ -98,7 +98,7 @@ export function HeaderNav({ nav, viewer }: { nav: NavItem[]; viewer: ViewerLite 
       </div>
 
       {open && (
-        <div id="mobile-nav" className="fixed inset-x-0 top-16 bottom-0 z-40 overflow-y-auto bg-white xl:hidden">
+        <div id="mobile-nav" className="fixed inset-x-0 top-20 bottom-0 z-40 overflow-y-auto bg-white xl:hidden">
           <nav aria-label="Mobile" className="flex flex-col px-5 pt-4 pb-10">
             {nav.map((item, i) => (
               <Link
